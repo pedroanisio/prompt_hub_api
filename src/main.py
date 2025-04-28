@@ -48,7 +48,7 @@ from src.services.claude_service import ClaudeService
 from src.services.gemini_service import GeminiService
 from src.services.session_service import SessionService
 from src.config import settings
-from src.database import get_db
+from src.database import get_db, async_session_factory
 
 # Configure logging
 logging.basicConfig(
@@ -147,8 +147,18 @@ async def cleanup_old_sessions():
     """Background task to cleanup old sessions periodically."""
     while True:
         try:
-            async with get_db() as db:
+            # Create a session using the session factory directly
+            db = async_session_factory()
+            try:
                 await session_service.cleanup_old_sessions(db)
+                await db.commit()
+            except Exception as e:
+                await db.rollback()
+                raise
+            finally:
+                await db.close()
+            
+            logger.info(f"Successfully cleaned up old sessions (older than {settings.session_expiry_hours} hours)")
         except Exception as e:
             logger.error(f"Error in cleanup task: {str(e)}")
         
