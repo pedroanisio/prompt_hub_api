@@ -8,7 +8,7 @@
 # 
 # Purpose: Docker configuration for the AI Prompt Service
 #
-# Dependencies: Python 3.11
+# Dependencies: Python 3.12
 ########################################################################
 
 FROM python:3.12-slim
@@ -29,5 +29,7 @@ ENV PORT=8000
 # Expose the application port
 EXPOSE 8000
 
-# Run the application
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Add after COPY . .
+COPY entrypoint.sh /app/
+RUN chmod +x /app/entrypoint.sh
+CMD ["/app/entrypoint.sh"]
