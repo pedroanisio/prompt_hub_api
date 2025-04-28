@@ -1,3 +1,4 @@
+"""
 ########################################################################
 # AI Prompt Service - Dockerfile
 # 
@@ -15,7 +16,12 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies including PostgreSQL client
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -26,10 +32,11 @@ COPY . .
 ENV PYTHONPATH=/app
 ENV PORT=8000
 
+# Make entrypoint script executable
+RUN chmod +x /app/entrypoint.sh
+
 # Expose the application port
 EXPOSE 8000
 
-# Add after COPY . .
-COPY entrypoint.sh /app/
-RUN chmod +x /app/entrypoint.sh
+# Run the application
 CMD ["/app/entrypoint.sh"]
