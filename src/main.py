@@ -36,6 +36,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import text
 from typing import Dict, Any, Optional, List
 import traceback
 
@@ -516,7 +517,7 @@ async def health_check(db: AsyncSession = Depends(get_db)):
     """Health check endpoint that verifies database connectivity."""
     try:
         # Try a simple database query to verify connectivity
-        await db.execute("SELECT 1")
+        await db.execute(text("SELECT 1"))
         db_status = "connected"
     except Exception as e:
         logger.error(f"Database health check failed: {str(e)}")
