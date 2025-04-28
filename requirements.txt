@@ -9,15 +9,15 @@
 # 
 # Purpose: Project dependencies
 #
-# Dependencies: Python 3.11+
+# Dependencies: Python 3.12+
 ########################################################################
 
-fastapi==0.110.1
+fastapi>=0.110.1
 uvicorn[standard]==0.27.0
 anthropic==0.17.0
 google-generativeai==0.6.0
-pydantic==2.5.3
-pydantic-settings==2.9.1
+pydantic>=2.5.3
+pydantic-settings>=2.9.1
 python-dotenv==1.0.0
 httpx==0.24.1
 pytest==7.4.0

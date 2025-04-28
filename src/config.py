@@ -35,10 +35,17 @@ class Settings(BaseSettings):
     default_claude_model: str = "claude-3-sonnet-20240229"
     default_gemini_model: str = "gemini-pro"
     
+    # PostgreSQL settings
+    postgres_user: str = os.environ.get("POSTGRES_USER", "postgres")
+    postgres_password: str = os.environ.get("POSTGRES_PASSWORD", "postgres")
+    postgres_db: str = os.environ.get("POSTGRES_DB", "prompt_service")
+    postgres_host: str = os.environ.get("POSTGRES_HOST", "localhost")
+    postgres_port: str = os.environ.get("POSTGRES_PORT", "5432")
+    
     # Database settings
     database_url: str = os.environ.get(
         "DATABASE_URL", 
-        "postgresql+asyncpg://postgres:postgres@localhost:5432/prompt_service"
+        f"postgresql+asyncpg://{postgres_user}:{postgres_password}@{postgres_host}:{postgres_port}/{postgres_db}"
     )
     db_echo: bool = os.environ.get("DB_ECHO", "false").lower() == "true"
     
@@ -51,6 +58,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
+        extra = "ignore"  # Allow extra fields from environment
 
 
 # Create global settings instance
